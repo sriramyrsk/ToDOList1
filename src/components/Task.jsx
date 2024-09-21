@@ -1,18 +1,53 @@
 import React from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const Task = ({ task, deleteTaskFn, reFetch, updateFinishedTask }) => {
-  //Hooks
-  const navigate = useNavigate();
+const Task = ({
+  task,
+  deleteTaskFn,
+  reFetch,
+  updateFinishedTask,
+  removeFromArray,
+  updatedStatus,
+}) => {
+  //Note : the code section below is used only when there is no server to render the components
 
-  //Time Variables
+  //Time Variables on Global Scope
+
   const deadlineDate = new Date(task.deadline);
   const currentTime = new Date();
   const remainingTimeSec = deadlineDate - currentTime; //12.4364768
   const remainingTime = remainingTimeSec / 1000 / 60 / 60;
+
+  //Time Variables as function
+
+  const calculateRemainingTime = () => {
+    const deadline = new Date(task.deadline);
+    const current = new Date();
+    const remaingTime = deadline - current;
+    const remainingTimehrs = remaingTime / 1000 / 60 / 60;
+    return remainingTimehrs;
+  };
+
+  const [remTime, setRemTime] = useState(calculateRemainingTime); //Setting Timer as State
   const hours = Math.floor(remainingTime); //12
   const mins = Math.floor((remainingTime - hours) * 60); //50
+
+  //Used for updating the time state every minute
+  useEffect(() => {
+    //useEffect here because we have timer
+    const timer = setInterval(() => {
+      setRemTime(calculateRemainingTime());
+    }, 60000); //runs this function on loop every 60 secs
+    return () => clearInterval(timer); //when the component unmounts it stops the loop
+  }, []);
+  //useEffect here for reRendering on change in timeState and status
+  useEffect(() => {
+    if (remTime < 0 && task.status !== "Completed") {
+      failedTask();
+      console.log("working");
+    }
+  }, [remTime, task.status]); // Only runs when remainingTime or task.status changes
 
   //style Variables
   let bgColor;
@@ -41,8 +76,36 @@ const Task = ({ task, deleteTaskFn, reFetch, updateFinishedTask }) => {
       break;
   }
 
-  //Functions
+  const finishedTask = () => {
+    // console.log("finished task")
+    updatedStatus(task.id, "Completed");
+    // console.log(tasksArray)
+  };
+  const deleteTask = () => {
+    console.log("finished task");
+    const confirmation = window.confirm(
+      "Are you sure you want to delete this task ?"
+    );
 
+    if (!confirmation) return;
+
+    try {
+      removeFromArray(task.id);
+      toast.success("Task Deleted Sucessfully");
+    } catch {
+      toast.error("Failed to Delete the Task");
+    }
+  };
+  const failedTask = () => {
+    console.log("failed task");
+    updatedStatus(task.id, "Failed to Complete");
+
+    return;
+  };
+
+  //for fetching api's
+  //these code works when we have server
+  /*
   const deleteTask = () => {
     const confirmation = window.confirm(
       "Are you sure you want to delete this task ?"
@@ -71,9 +134,7 @@ const Task = ({ task, deleteTaskFn, reFetch, updateFinishedTask }) => {
     const updatedData = { ...task, status: "Failed to Complete" };
     updateFinishedTask(updatedData, task.id);
     reFetch();
-  };
-
-  remainingTime < 0 && task.status != "Completed" ? failedTask() : null;
+  };*/
 
   return (
     <div
@@ -126,3 +187,32 @@ const Task = ({ task, deleteTaskFn, reFetch, updateFinishedTask }) => {
 };
 
 export default Task;
+
+/*
+Problme:Not using useState properly
+Need for useState :
+
+for changing Tasks I used them as Arrays and not State Array 
+result : The change in arrays were not rendered by the component 
+
+ for calculating remaing time I was not using state instead I used variable 
+ result: the time was calculated only once and not updated later
+
+ Need for useEffect :
+ Use Effect allows us to reRender component after a change in some of its dependency array or it just renders or mounts component in the begning
+
+With a change in some state in the dependency array, the useEffect will do some action first, and then the component will render again.
+
+ I needed to update the time state with value for every certain intervals
+
+ for this i used setINterval from js which - runs something in a gap of some intervals
+ then i used return ()=> useEffect cleanup function to clear this interval
+
+ result: the change in time was not visible after recaculating them after every 60 second
+
+ I Used useEffect for calling a function to let the react reRender the changes of the function with dependency= on Change of which state(in this case its the remtim) 
+ i should do some action and render
+
+ I specified the states to be remaining time 
+
+*/

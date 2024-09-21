@@ -1,12 +1,19 @@
 import React from "react";
 import Task from "./Task";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react"; //used when we fetch from server
 import { Link } from "react-router-dom";
-const Tasks = ({ deleteTaskFn, updateFinishedTask }) => {
-  const [tasks, setTasks] = useState([]);
+const Tasks = ({
+  deleteTaskFn,
+  updateFinishedTask,
+  tasksArray,
+  setTasksArray,
+}) => {
+  let updatedArray;
+  const fetchTask = () => {};
 
-  const fetchTask = async () => {
+  //This section of code works when we have a server to fetch data from
+
+  /*const fetchTask = async () => {
     try {
       const data = await fetch("/api/tasks");
       const res = await data.json();
@@ -17,21 +24,47 @@ const Tasks = ({ deleteTaskFn, updateFinishedTask }) => {
     }
   };
 
-  useEffect(() => {
-    fetchTask();
-  }, []);
+   useEffect(() => {
+     fetchTask();
+   }, []);
+*/
+
+  //This section of code is used when we dont use server
+
+  //removes element with target id from state array
+  const removeFromArray = (taskId) => {
+    updatedArray = tasksArray.filter((task) => task.id != taskId);
+    setTasksArray(updatedArray);
+    console.log(tasksArray);
+  };
+
+  //updates existing state array
+  const updatedStatus = (taskId, newStatus) => {
+    updatedArray = tasksArray.map((task) => {
+      if (task.id == taskId) {
+        return { ...task, status: newStatus };
+      }
+      return task;
+    });
+    setTasksArray(updatedArray);
+    console.log(tasksArray);
+  };
 
   return (
     <>
       <div className="flex justify-evenly bg-orange-50 flex-wrap min-h-screen">
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
+        {tasksArray.length > 0 ? (
+          tasksArray.map((task) => (
             <Task
               key={task.id}
               task={task}
               deleteTaskFn={deleteTaskFn}
               reFetch={fetchTask}
               updateFinishedTask={updateFinishedTask}
+              removeFromArray={removeFromArray}
+              tasksArray={tasksArray}
+              setTasksArray={setTasksArray}
+              updatedStatus={updatedStatus}
             />
           ))
         ) : (

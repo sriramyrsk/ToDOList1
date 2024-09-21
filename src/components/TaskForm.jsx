@@ -2,8 +2,10 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
+
 import PageBg from "../images/bg-3.jpg";
-const TaskForm = ({ addTaskSubmit }) => {
+const TaskForm = ({ addTaskSubmit, tasksArray, setTasksArray }) => {
   const navigate = useNavigate();
   const warpperFlexForm =
     "flex flex-col items-center md:flex-row md:justify-evenly md:items-center";
@@ -11,6 +13,30 @@ const TaskForm = ({ addTaskSubmit }) => {
   const [priority, setPriority] = useState(1);
   const [deadline, setDeadline] = useState("");
 
+  //this section of code is used when there is no server
+  const submitForm = (e) => {
+    console.log("Submit form");
+    e.preventDefault();
+    const newObj = {
+      id: uuidv4(),
+      name: name,
+      priority: priority,
+      deadline: deadline,
+      status: "Yet to Complete",
+    };
+    try {
+      setTasksArray([...tasksArray, newObj]); //we push data into state tasksArray
+      toast.success("Task Added sucessfully");
+      navigate("/view-tasks");
+    } catch {
+      toast.error("Failed to Add task");
+    }
+
+    console.log(tasksArray);
+  };
+
+  //This section of code is used for sending data to server
+  /*
   const submitForm = (e) => {
     e.preventDefault();
     const newObj = {
@@ -27,7 +53,7 @@ const TaskForm = ({ addTaskSubmit }) => {
     } finally {
       navigate("/view-tasks");
     }
-  };
+  };*/
   return (
     <div
       className="bg-image bg-cover bg-no-repeat bg-right md:bg-center w-full h-screen opacity-80 brightness-95"

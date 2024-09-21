@@ -1,3 +1,24 @@
-{
-  "tasks": []
-}
+[
+  {
+    "id": "task1",
+    "name": "sdsaf",
+    "priority": 1,
+    "deadline": "2024-09-17T16:21",
+    "status": "Yet to Complete"
+  },
+  {
+    "id": "task2",
+    "name": "Another task",
+    "priority": 2,
+    "deadline": "2024-09-20T10:00",
+    "status": "Yet to Complete"
+  },
+  {
+    "id": "task2",
+    "name": "Another task",
+    "priority": 2,
+    "deadline": "2024-09-20T10:00",
+    "status": "Yet to Complete"
+  }
+]
+  

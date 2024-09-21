@@ -16,6 +16,18 @@ const References = () => {
           &nbsp;https://www.youtube.com/watch?v=LDB4uaJ87e0&t=8742s
         </Link>
       </div>
+      <div className="flex md:flex-row flex-col">
+        <p className="font-bold">
+          Code for ToDoList using server :{" "}
+        </p>
+        <Link
+          to="https://github.com/sriramyrsk/ToDoList"
+          target="_blank"
+          className="text-blue-500 font-extrabold"
+        >
+          &nbsp;https://github.com/sriramyrsk/ToDoList
+        </Link>
+      </div>
 
       <p className="font-medium">
         ChatGpt and Gemini : I cleared doubts on fundamentals like api , server

@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useState } from "react";
 import {
   Route,
   createBrowserRouter,
@@ -12,8 +12,15 @@ import ViewTasksPage from "./pages/ViewTasksPage";
 import MainLayout from "./layouts/MainLayout";
 import AboutPage from "./pages/AboutPage";
 
-
 const App = () => {
+  const [tasksArray, setTasksArray] = useState([]);
+
+  const addTask = () => {};
+
+  const deleteTask = () => {};
+
+  const finishedTask = () => {};
+  /*This section handles API and methods suchs get post put etc
   const addTask = async (newJob) => {
     const res = await fetch("/api/tasks", {
       method: "POST",
@@ -40,14 +47,20 @@ const App = () => {
       body: JSON.stringify(updatedData),
     });
   };
-
+*/
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
         <Route
           path="/add-tasks"
-          element={<AddTasksPage addTaskSubmit={addTask} />}
+          element={
+            <AddTasksPage
+              addTaskSubmit={addTask}
+              tasksArray={tasksArray}
+              setTasksArray={setTasksArray}
+            />
+          }
         />
         <Route
           path="/view-tasks"
@@ -55,6 +68,8 @@ const App = () => {
             <ViewTasksPage
               deleteTaskFn={deleteTask}
               updateFinishedTask={finishedTask}
+              tasksArray={tasksArray}
+              setTasksArray={setTasksArray}
             />
           }
         ></Route>
